@@ -20,7 +20,25 @@ button:disabled{opacity:.5}
 #questions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
 .question{border:1px solid #d9e0ea;border-radius:9px;padding:10px;text-align:center;min-width:0}
 .question strong{display:block;color:#344d75;margin-bottom:8px}
-.sum{font-size:17px;line-height:1.8;white-space:pre-line}
+.sum{
+ font-family:monospace;
+ font-size:19px;
+ line-height:1.8;
+ font-variant-numeric:tabular-nums;
+}
+.sum-line{
+ display:grid;
+ grid-template-columns:20px 1fr;
+ align-items:center;
+}
+.sum-sign{
+ text-align:center;
+ font-weight:bold;
+}
+.sum-number{
+ text-align:right;
+ white-space:nowrap;
+}
 .small{font-size:13px;color:#65748a;line-height:1.5}
 #clock{font-size:25px;font-weight:bold;color:#344d75}
 #photoPreview{max-width:100%;max-height:350px;display:none;margin-top:12px;border-radius:8px}
@@ -223,12 +241,26 @@ function startTest(){
   card.className="question";
   const heading=document.createElement("strong");
   heading.textContent="Column "+(index+1);
-  const sum=document.createElement("div");
-  sum.className="sum";
-  sum.textContent=q.values.map((v,i)=>{
-   const n=displayValue(Math.abs(v),format);
-   return i===0?n:(v<0?"− ":"+ ")+n;
-  }).join("\n");
+  
+const sum=document.createElement("div");
+sum.className="sum";
+
+q.values.forEach((v,i)=>{
+ const line=document.createElement("div");
+ line.className="sum-line";
+
+ const sign=document.createElement("span");
+ sign.className="sum-sign";
+ sign.textContent=v<0?"−":"";
+
+ const number=document.createElement("span");
+ number.className="sum-number";
+ number.textContent=displayValue(Math.abs(v),format);
+
+ line.append(sign,number);
+ sum.append(line);
+});
+
   card.append(heading,sum);
   $("questions").append(card);
  });
