@@ -27,15 +27,20 @@ button:disabled{opacity:.5}
  font-variant-numeric:tabular-nums;
 }
 .sum-line{
- display:grid;
- grid-template-columns:20px 1fr;
+ display:flex;
+ justify-content:flex-end;
  align-items:center;
+ gap:4px;
+ min-height:1.8em;
 }
 .sum-sign{
- text-align:center;
+ width:12px;
+ text-align:right;
  font-weight:bold;
+ flex-shrink:0;
 }
 .sum-number{
+ min-width:5ch;
  text-align:right;
  white-space:nowrap;
 }
