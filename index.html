@@ -2,401 +2,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abacus Skill Builder</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #202b3c;
-    }
-
-    header {
-      background: #243b64;
-      color: white;
-      padding: 22px 16px;
-      text-align: center;
-    }
-
-    header h1 { margin: 0 0 7px; }
-    header p { margin: 0; }
-
-    main {
-      max-width: 1100px;
-      margin: 22px auto;
-      padding: 0 14px 35px;
-    }
-
-    .panel {
-      background: white;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 18px;
-      box-shadow: 0 2px 10px #0000000b;
-    }
-
-    .settings {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: end;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-
-    select, input {
-      font: inherit;
-      padding: 10px;
-      border: 1px solid #cbd3df;
-      border-radius: 8px;
-      width: 100%;
-      min-width: 90px;
-    }
-
-    .setting { flex: 1; min-width: 120px; }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 17px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #2864c5;
-      color: white;
-    }
-
-    button:hover { background: #194d9f; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-
-    .secondary { background: #64748b; }
-
-    .status {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-weight: bold;
-      font-size: 17px;
-    }
-
-    #timer { color: #b42318; }
-
-    #columns {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .question {
-      border: 1px solid #dce3ed;
-      border-radius: 10px;
-      padding: 12px 8px;
-      text-align: center;
-      background: #fbfcff;
-      min-width: 0;
-    }
-
-    .question-number {
-      color: #64748b;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    .numbers {
-      font-size: clamp(17px, 2.5vw, 23px);
-      line-height: 1.55;
-      font-weight: bold;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-
-    .answer {
-      margin-top: 10px;
-      text-align: center;
-      min-width: 0;
-      width: 100%;
-    }
-
-    .answer:disabled {
-      background: #eef1f5;
-      color: #555;
-    }
-
-    #results { line-height: 1.8; }
-
-    .correct { color: #16803c; }
-    .incorrect { color: #b42318; }
-
-    @media (max-width: 700px) {
-      #columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 420px) {
-      #columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abacus Skill Builder</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f4f7fb;color:#25334a}
+header{background:#344d75;color:white;padding:22px;text-align:center}
+main{max-width:1100px;margin:20px auto;padding:15px}
+.panel{background:white;padding:18px;border-radius:14px;margin-bottom:16px;box-shadow:0 2px 9px #0000000c}
+h2{margin-top:0;color:#344d75}
+label{display:block;font-weight:bold;margin:12px 0 5px}
+select,input,textarea,button{font:inherit;padding:11px;border:1px solid #ccd4df;border-radius:8px;width:100%}
+button{background:#344d75;color:white;border:0;font-weight:bold;cursor:pointer;margin-top:12px}
+button:disabled{opacity:.5}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#questions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.question{border:1px solid #d9e0ea;border-radius:9px;padding:10px;text-align:center;min-width:0}
+.question strong{display:block;color:#344d75;margin-bottom:8px}
+.sum{font-size:17px;line-height:1.8;white-space:pre-line}
+.small{font-size:13px;color:#65748a;line-height:1.5}
+#clock{font-size:25px;font-weight:bold;color:#344d75}
+#photoPreview{max-width:100%;max-height:350px;display:none;margin-top:12px;border-radius:8px}
+.result{padding:10px;border-radius:8px;margin:6px 0;background:#f1f5fa}
+.good{color:#147a43}.bad{color:#b43b3b}.skip{color:#8a6500}
+.hidden{display:none}
+@media(max-width:700px){#questions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>🌟 Abacus Skill Builder</h1>
-    <p>Practise with focus. Calculate with confidence!</p>
-  </header>
+<header>
+<h1>🧮 Abacus Skill Builder</h1>
+<p>Practise • Improve • Achieve</p>
+</header>
+<main>
+<section class="panel">
+<h2>1. Choose your practice</h2>
+<div class="row">
+<div>
+<label for="student">Student</label>
+<select id="student">
+<option value="Aaryan">Aaryan</option>
+<option value="Aarush">Aarush</option>
+</select>
+</div>
+<div>
+<label for="level">Abacus level</label>
+<select id="level">
+<option value="1">Advanced Level 1</option>
+<option value="4">Advanced Level 4</option>
+</select>
+</div>
+<div>
+<label for="format">Number type</label>
+<select id="format">
+<option value="whole">Whole numbers</option>
+<option value="decimal">Decimals (Level 4)</option>
+</select>
+</div>
+<div>
+<label for="columns">Number of columns</label>
+<select id="columns">
+<option>10</option><option>20</option><option>25</option>
+</select>
+</div>
+<div>
+<label for="terms">Numbers in each column</label>
+<select id="terms">
+<option>5</option><option>6</option><option>7</option>
+</select>
+</div>
+<div>
+<label for="minutes">Time limit</label>
+<select id="minutes">
+<option value="5">5 minutes</option>
+<option value="3">3 minutes</option>
+<option value="10">10 minutes</option>
+</select>
+</div>
+</div>
+<p class="small" id="levelInfo"></p>
+<button id="startBtn" onclick="startTest()">Generate and start test</button>
+</section>
 
-  <main>
-    <section class="panel">
-      <h2>Abacus Skill Test</h2>
-      <div class="settings">
-        <div class="setting">
-          <label for="student">Student</label>
-          <select id="student">
-            <option>Aarush</option>
-            <option>Aaryan</option>
-          </select>
-        </div>
+<section class="panel">
+<h2>2. Solve on your Abacus</h2>
+<p class="small">Use your physical Abacus. Calculate each vertical column and write only its final answer on ordinary paper. Keep the original question numbers.</p>
+<div id="clock">05:00</div>
+<p id="testInfo" class="small">Start a test to see your questions here.</p>
+<div id="questions"></div>
+<button id="finishBtn" onclick="finishTest()" disabled>Finish test and submit answers</button>
+</section>
 
-        <div class="setting">
-          <label for="columnCount">Number of columns</label>
-          <select id="columnCount">
-            <option>10</option>
-            <option selected>20</option>
-            <option>25</option>
-          </select>
-        </div>
+<section class="panel">
+<h2>3. Upload your answer photograph</h2>
+<p><b>Instructions for the child:</b></p>
+<ul class="small">
+<li>Write answers in question order on ordinary paper.</li>
+<li>Number them like 1, 1), 1., or Column 1.</li>
+<li>If you skip a question, keep the original numbering. Do not renumber later answers.</li>
+<li>Write one final answer for each question.</li>
+<li>Take a clear photograph showing the question numbers and answers.</li>
+</ul>
+<label for="photo">Choose answer-sheet photograph</label>
+<input id="photo" type="file" accept="image/*" capture="environment" onchange="previewPhoto(event)">
+<img id="photoPreview" alt="Answer sheet preview">
+<button id="readBtn" onclick="readPhoto()" disabled>Try to read my answers</button>
+<p id="ocrStatus" class="small"></p>
+<label for="answerText">Recognised answers — please check and correct them</label>
+<textarea id="answerText" rows="8" placeholder="Example:
+1) 125
+2. 84
+3 206
+4) 91
+5. 173
+8) 245"></textarea>
+<p class="small">Keep the original serial numbers. Missing numbers will be treated as unattempted. If the handwriting is unclear, correct the text before scoring.</p>
+<button id="scoreBtn" onclick="scoreTest()" disabled>Check answers and show results</button>
+</section>
 
-        <div class="setting">
-          <label for="numberCount">Numbers per column</label>
-          <select id="numberCount">
-            <option>3</option>
-            <option selected>5</option>
-            <option>7</option>
-          </select>
-        </div>
+<section class="panel hidden" id="results">
+<h2>4. Test results</h2>
+<div id="resultSummary"></div>
+<div id="resultDetails"></div>
+</section>
 
-        <div class="setting">
-          <label for="timeLimit">Time limit</label>
-          <select id="timeLimit">
-            <option value="3">3 minutes</option>
-            <option value="5" selected>5 minutes</option>
-            <option value="10">10 minutes</option>
-          </select>
-        </div>
+<section class="panel">
+<h2>Practice history</h2>
+<div id="history"></div>
+</section>
+</main>
 
-        <button id="startButton">Start new test</button>
-      </div>
-    </section>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+let questions=[];
+let timer=null;
+let remaining=0;
+let running=false;
+let finished=false;
+let photoFile=null;
+let currentStudent="";
+let currentLevel="";
 
-    <section class="panel status">
-      <span id="testStatus">Ready to practise</span>
-      <span id="timer">Time: 05:00</span>
-    </section>
+const $=id=>document.getElementById(id);
 
-    <section class="panel">
-      <p>Use your physical Abacus. Calculate each complete column and enter just one final answer below it.</p>
-      <div id="columns">
-        <p>Choose Start new test to generate your questions.</p>
-      </div>
-      <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
-        <button id="submitButton" disabled>Submit answers</button>
-        <button id="resetButton" class="secondary">Clear answers</button>
-      </div>
-    </section>
+function updateLevel(){
+ const level=$("level").value;
+ const format=$("format");
+ format.disabled=level!=="4";
+ if(level!=="4") format.value="whole";
+ $("levelInfo").textContent=level==="1"
+ ? "Advanced Level 1 practice: multi-digit addition and subtraction. The sample paper showed a 5-minute test."
+ : "Advanced Level 4 practice: larger whole numbers or two-decimal-place sums. The sample paper showed a 3-minute Abacus test.";
+ if(level==="1") $("minutes").value="5";
+ else $("minutes").value="3";
+}
+$("level").addEventListener("change",updateLevel);
+updateLevel();
 
-    <section class="panel" id="results" aria-live="polite">
-      <h2>My results</h2>
-      <p>Your score will appear here after you submit.</p>
-    </section>
-  </main>
-
-  <script>
-    let questions = [];
-    let secondsLeft = 300;
-    let timerInterval = null;
-    let testRunning = false;
-
-    const columns = document.getElementById("columns");
-    const timer = document.getElementById("timer");
-    const status = document.getElementById("testStatus");
-    const submitButton = document.getElementById("submitButton");
-    const results = document.getElementById("results");
-
-    function makeQuestion(numberCount) {
-      const numbers = [];
-      let total = 0;
-
-      for (let i = 0; i < numberCount; i++) {
-        let value;
-
-        if (i === 0) {
-          value = Math.floor(Math.random() * 9) + 1;
-        } else {
-          value = Math.floor(Math.random() * 9) + 1;
-          if (Math.random() < 0.5) value = -value;
-        }
-
-        numbers.push(value);
-        total += value;
-      }
-
-      return { numbers, answer: total };
+function randomInt(min,max){
+ return Math.floor(Math.random()*(max-min+1))+min;
+}
+function makeQuestion(level,format,termCount){
+ let values=[];
+ let total=0;
+ for(let i=0;i<termCount;i++){
+  let value;
+  if(level==="1"){
+   value=randomInt(10,999);
+  }else if(format==="decimal"){
+   value=randomInt(100,99999);
+  }else{
+   value=randomInt(1000,9999);
+  }
+  if(i>0 && Math.random()<0.5) value=-value;
+  values.push(value);
+  total+=value;
+ }
+ return {values,total};
+}
+function displayValue(value,format){
+ if(format==="decimal") return (value/100).toFixed(2);
+ return String(value);
+}
+function startTest(){
+ clearInterval(timer);
+ currentStudent=$("student").value;
+ currentLevel=$("level").value;
+ const format=$("format").value;
+ const count=Number($("columns").value);
+ const termCount=Number($("terms").value);
+ questions=Array.from({length:count},()=>makeQuestion(currentLevel,format,termCount));
+ finished=false;
+ running=true;
+ $("results").classList.add("hidden");
+ $("answerText").value="";
+ $("photo").value="";
+ $("photoPreview").style.display="none";
+ $("readBtn").disabled=true;
+ $("scoreBtn").disabled=true;
+ $("ocrStatus").textContent="";
+ photoFile=null;
+ $("testInfo").textContent=currentStudent+" • Advanced Level "+currentLevel+" • "+count+" columns";
+ $("questions").innerHTML="";
+ questions.forEach((q,index)=>{
+  const card=document.createElement("div");
+  card.className="question";
+  const heading=document.createElement("strong");
+  heading.textContent="Column "+(index+1);
+  const sum=document.createElement("div");
+  sum.className="sum";
+  sum.textContent=q.values.map((v,i)=>{
+   const n=displayValue(Math.abs(v),format);
+   return i===0?n:(v<0?"− ":"+ ")+n;
+  }).join("\n");
+  card.append(heading,sum);
+  $("questions").append(card);
+ });
+ $("finishBtn").disabled=false;
+ $("startBtn").disabled=true;
+ remaining=Number($("minutes").value)*60;
+ updateClock();
+ timer=setInterval(()=>{
+  remaining--;
+  updateClock();
+  if(remaining<=0){
+   clearInterval(timer);
+   finishTest();
+  }
+ },1000);
+}
+function updateClock(){
+ const m=Math.floor(remaining/60);
+ const s=remaining%60;
+ $("clock").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function finishTest(){
+ if(!running || finished)return;
+ running=false;
+ finished=true;
+ clearInterval(timer);
+ $("finishBtn").disabled=true;
+ $("startBtn").disabled=false;
+ $("readBtn").disabled=!photoFile;
+ $("scoreBtn").disabled=false;
+ $("ocrStatus").textContent="Test finished. Upload your answer photograph or enter the numbered answers above.";
+}
+function previewPhoto(event){
+ const file=event.target.files[0];
+ if(!file)return;
+ if(!file.type.startsWith("image/")){
+  alert("Please choose an image.");
+  return;
+ }
+ photoFile=file;
+ $("photoPreview").src=URL.createObjectURL(file);
+ $("photoPreview").style.display="block";
+ $("readBtn").disabled=false;
+ $("ocrStatus").textContent="Photograph ready. Select 'Try to read my answers'.";
+}
+async function readPhoto(){
+ if(!photoFile)return;
+ if(!finished){
+  alert("Please finish the test first.");
+  return;
+ }
+ if(!window.Tesseract){
+  $("ocrStatus").textContent="Free OCR could not load. You can type your numbered answers in the box.";
+  return;
+ }
+ $("readBtn").disabled=true;
+ $("ocrStatus").textContent="Trying to read the photograph. This may take a little time...";
+ try{
+  const result=await Tesseract.recognize(photoFile,"eng",{
+   logger:m=>{
+    if(m.status==="recognizing text"){
+     $("ocrStatus").textContent="Reading photograph: "+Math.round((m.progress||0)*100)+"%";
     }
-
-    function formatNumber(value, index) {
-      if (index === 0) return String(value);
-      return value > 0 ? "+" + value : "−" + Math.abs(value);
-    }
-
-    function displayQuestions() {
-      columns.innerHTML = "";
-
-      questions.forEach((question, index) => {
-        const card = document.createElement("div");
-        card.className = "question";
-
-        const numberLabel = document.createElement("div");
-        numberLabel.className = "question-number";
-        numberLabel.textContent = "Column " + (index + 1);
-
-        const numberList = document.createElement("div");
-        numberList.className = "numbers";
-
-        question.numbers.forEach((number, i) => {
-          const line = document.createElement("div");
-          line.textContent = formatNumber(number, i);
-          numberList.appendChild(line);
-        });
-
-        const answer = document.createElement("input");
-        answer.type = "number";
-        answer.step = "1";
-        answer.className = "answer";
-        answer.placeholder = "Answer";
-        answer.setAttribute("aria-label", "Answer for column " + (index + 1));
-        answer.disabled = true;
-
-        card.append(numberLabel, numberList, answer);
-        columns.appendChild(card);
-      });
-    }
-
-    function updateTimer() {
-      const minutes = Math.floor(secondsLeft / 60);
-      const seconds = secondsLeft % 60;
-      timer.textContent = "Time: " +
-        String(minutes).padStart(2, "0") + ":" +
-        String(seconds).padStart(2, "0");
-    }
-
-    function finishTest(message) {
-      clearInterval(timerInterval);
-      testRunning = false;
-      status.textContent = message;
-
-      document.querySelectorAll(".answer").forEach(input => {
-        input.disabled = true;
-      });
-
-      submitButton.disabled = true;
-      scoreTest();
-    }
-
-    function startTest() {
-      clearInterval(timerInterval);
-
-      const count = Number(document.getElementById("columnCount").value);
-      const numberCount = Number(document.getElementById("numberCount").value);
-      const minutes = Number(document.getElementById("timeLimit").value);
-
-      questions = Array.from(
-        { length: count },
-        () => makeQuestion(numberCount)
-      );
-
-      displayQuestions();
-
-      secondsLeft = minutes * 60;
-      updateTimer();
-
-      document.querySelectorAll(".answer").forEach(input => {
-        input.disabled = false;
-      });
-
-      results.innerHTML = "<h2>My results</h2><p>Test in progress. Good luck!</p>";
-      status.textContent = "Test in progress";
-      submitButton.disabled = false;
-      testRunning = true;
-
-      timerInterval = setInterval(() => {
-        secondsLeft--;
-        updateTimer();
-
-        if (secondsLeft <= 0) {
-          finishTest("Time is up!");
-        }
-      }, 1000);
-    }
-
-    function scoreTest() {
-      let correct = 0;
-      let attempted = 0;
-      let unanswered = 0;
-
-      const answers = document.querySelectorAll(".answer");
-
-      questions.forEach((question, index) => {
-        const value = answers[index].value.trim();
-
-        if (value === "") {
-          unanswered++;
-          return;
-        }
-
-        attempted++;
-        if (Number(value) === question.answer) {
-          correct++;
-        }
-      });
-
-      const incorrect = attempted - correct;
-      const accuracy = attempted === 0
-        ? 0
-        : Math.round((correct / attempted) * 100);
-
-      results.innerHTML = `
-        <h2>Test results</h2>
-        <p><strong>Student:</strong> ${document.getElementById("student").value}</p>
-        <p class="correct"><strong>Correct:</strong> ${correct}</p>
-        <p class="incorrect"><strong>Incorrect:</strong> ${incorrect}</p>
-        <p><strong>Unanswered:</strong> ${unanswered}</p>
-        <p><strong>Total columns:</strong> ${questions.length}</p>
-        <p><strong>Accuracy:</strong> ${accuracy}% of attempted columns</p>
-        <p><strong>Time remaining:</strong> ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}</p>
-        <p>Keep practising. Every attempt helps you improve!</p>
-      `;
-    }
-
-    document.getElementById("startButton").addEventListener("click", startTest);
-
-    submitButton.addEventListener("click", () => {
-      if (testRunning) finishTest("Test submitted");
-    });
-
-    document.getElementById("resetButton").addEventListener("click", () => {
-      if (!testRunning) return;
-      document.querySelectorAll(".answer").forEach(input => {
-        input.value = "";
-      });
-    });
-  </script>
+   }
+  });
+  $("answerText").value=result.data.text;
+  $("ocrStatus").textContent="Reading attempt complete. Please correct any mistakes in the text before scoring. Handwriting recognition may be inaccurate.";
+  $("scoreBtn").disabled=false;
+ }catch(error){
+  $("ocrStatus").textContent="Could not read this photograph. Please type the numbered answers manually.";
+  $("scoreBtn").disabled=false;
+ }finally{
+  $("readBtn").disabled=false;
+ }
+}
+function parseAnswers(text){
+ const answers={};
+ const warnings=[];
+ const lines=text.split(/\r?\n/);
+ lines.forEach((line,index)=>{
+  const clean=line.trim().replace(/,/g,"");
+  if(!clean)return;
+  const match=clean.match(/^(?:column\s*)?(\d{1,2})\s*[).:\-]?\s+(-?\d+(?:\.\d{1,2})?)\s*$/i);
+  if(!match){
+   warnings.push("Line "+(index+1)+" needs checking: "+line);
+   return;
+  }
+  const number=Number(match[1]);
+  if(number<1 || number>questions.length){
+   warnings.push("Question number out of range: "+number);
+   return;
+  }
+  if(answers[number]!==undefined){
+   warnings.push("Duplicate answer number: "+number);
+   return;
+  }
+  answers[number]=match[2];
+ });
+ return {answers,warnings};
+}
+function scoreTest(){
+ if(!finished || !questions.length){
+  alert("Please complete a test first.");
+  return;
+ }
+ const parsed=parseAnswers($("answerText").value);
+ const format=$("format").value;
+ let correct=0,incorrect=0,unattempted=0;
+ let details="";
+ questions.forEach((q,index)=>{
+  const n=index+1;
+  const submitted=parsed.answers[n];
+  if(submitted===undefined){
+   unattempted++;
+   details+='<div class="result skip">Column '+n+': Unattempted</div>';
+   return;
+  }
+  let entered;
+  if(format==="decimal"){
+   if(!/^-?\d+(?:\.\d{1,2})?$/.test(submitted)){
+    incorrect++;
+    details+='<div class="result bad">Column '+n+': Invalid number — '+submitted+'</div>';
+    return;
+   }
+   entered=Math.round(Number(submitted)*100);
+  }else{
+   if(!/^-?\d+$/.test(submitted)){
+    incorrect++;
+    details+='<div class="result bad">Column '+n+': Invalid number — '+submitted+'</div>';
+    return;
+   }
+   entered=Number(submitted);
+  }
+  if(entered===q.total){
+   correct++;
+   details+='<div class="result good">Column '+n+': Correct ✓</div>';
+  }else{
+   incorrect++;
+   details+='<div class="result bad">Column '+n+': Incorrect — your answer: '+submitted+'; correct answer: '+displayValue(q.total,format)+'</div>';
+  }
+ });
+ const attempted=correct+incorrect;
+ const accuracy=attempted?((correct/attempted)*100).toFixed(1):"0.0";
+ const total=questions.length;
+ const elapsed=Number($("minutes").value)*60-remaining;
+ const duration=finished?Math.max(0,elapsed):0;
+ const mins=Math.floor(duration/60);
+ const secs=duration%60;
+ $("resultSummary").innerHTML=
+  "<p><b>Student:</b> "+currentStudent+"</p>"+
+  "<p><b>Level:</b> Advanced Level "+currentLevel+"</p>"+
+  "<p><b>Correct:</b> "+correct+" / "+total+"</p>"+
+  "<p><b>Incorrect:</b> "+incorrect+"</p>"+
+  "<p><b>Unattempted:</b> "+unattempted+"</p>"+
+  "<p><b>Attempted:</b> "+attempted+"</p>"+
+  "<p><b>Accuracy:</b> "+accuracy+"%</p>"+
+  "<p><b>Time used:</b> "+mins+" min "+secs+" sec</p>";
+ if(parsed.warnings.length){
+  details+='<div class="result"><b>Please review these lines:</b><br>'+parsed.warnings.map(w=>escapeHTML(w)).join("<br>")+'</div>';
+ }
+ $("resultDetails").innerHTML=details;
+ $("results").classList.remove("hidden");
+ saveHistory({date:new Date().toLocaleString(),student:currentStudent,level:currentLevel,correct,incorrect,unattempted,accuracy});
+ renderHistory();
+}
+function escapeHTML(s){
+ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function saveHistory(item){
+ try{
+  const history=JSON.parse(localStorage.getItem("abacusHistory")||"[]");
+  history.unshift(item);
+  localStorage.setItem("abacusHistory",JSON.stringify(history.slice(0,30)));
+ }catch(e){}
+}
+function renderHistory(){
+ let history=[];
+ try{history=JSON.parse(localStorage.getItem("abacusHistory")||"[]");}catch(e){}
+ $("history").innerHTML=history.length?history.map(h=>
+  '<div class="result"><b>'+escapeHTML(h.student)+'</b> • Level '+h.level+
+  '<br>'+escapeHTML(h.date)+'<br>Correct: '+h.correct+
+  ' • Incorrect: '+h.incorrect+' • Skipped: '+h.unattempted+
+  ' • Accuracy: '+h.accuracy+'%</div>'
+ ).join(""):"<p class='small'>No completed tests saved on this device yet.</p>";
+}
+renderHistory();
+</script>
 </body>
 </html>
