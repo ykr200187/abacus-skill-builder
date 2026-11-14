@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abacus Skill Builder</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #202b3c;
+    }
+
+    header {
+      background: #243b64;
+      color: white;
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    header h1 { margin: 0 0 7px; }
+    header p { margin: 0; }
+
+    main {
+      max-width: 1100px;
+      margin: 22px auto;
+      padding: 0 14px 35px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px #0000000b;
+    }
+
+    .settings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    select, input {
+      font: inherit;
+      padding: 10px;
+      border: 1px solid #cbd3df;
+      border-radius: 8px;
+      width: 100%;
+      min-width: 90px;
+    }
+
+    .setting { flex: 1; min-width: 120px; }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 17px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #2864c5;
+      color: white;
+    }
+
+    button:hover { background: #194d9f; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+
+    .secondary { background: #64748b; }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    #timer { color: #b42318; }
+
+    #columns {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .question {
+      border: 1px solid #dce3ed;
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+      background: #fbfcff;
+      min-width: 0;
+    }
+
+    .question-number {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .numbers {
+      font-size: clamp(17px, 2.5vw, 23px);
+      line-height: 1.55;
+      font-weight: bold;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .answer {
+      margin-top: 10px;
+      text-align: center;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .answer:disabled {
+      background: #eef1f5;
+      color: #555;
+    }
+
+    #results { line-height: 1.8; }
+
+    .correct { color: #16803c; }
+    .incorrect { color: #b42318; }
+
+    @media (max-width: 700px) {
+      #columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 420px) {
+      #columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🌟 Abacus Skill Builder</h1>
+    <p>Practise with focus. Calculate with confidence!</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Abacus Skill Test</h2>
+      <div class="settings">
+        <div class="setting">
+          <label for="student">Student</label>
+          <select id="student">
+            <option>Aarush</option>
+            <option>Aaryan</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="columnCount">Number of columns</label>
+          <select id="columnCount">
+            <option>10</option>
+            <option selected>20</option>
+            <option>25</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="numberCount">Numbers per column</label>
+          <select id="numberCount">
+            <option>3</option>
+            <option selected>5</option>
+            <option>7</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="timeLimit">Time limit</label>
+          <select id="timeLimit">
+            <option value="3">3 minutes</option>
+            <option value="5" selected>5 minutes</option>
+            <option value="10">10 minutes</option>
+          </select>
+        </div>
+
+        <button id="startButton">Start new test</button>
+      </div>
+    </section>
+
+    <section class="panel status">
+      <span id="testStatus">Ready to practise</span>
+      <span id="timer">Time: 05:00</span>
+    </section>
+
+    <section class="panel">
+      <p>Use your physical Abacus. Calculate each complete column and enter just one final answer below it.</p>
+      <div id="columns">
+        <p>Choose Start new test to generate your questions.</p>
+      </div>
+      <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="submitButton" disabled>Submit answers</button>
+        <button id="resetButton" class="secondary">Clear answers</button>
+      </div>
+    </section>
+
+    <section class="panel" id="results" aria-live="polite">
+      <h2>My results</h2>
+      <p>Your score will appear here after you submit.</p>
+    </section>
+  </main>
+
+  <script>
+    let questions = [];
+    let secondsLeft = 300;
+    let timerInterval = null;
+    let testRunning = false;
+
+    const columns = document.getElementById("columns");
+    const timer = document.getElementById("timer");
+    const status = document.getElementById("testStatus");
+    const submitButton = document.getElementById("submitButton");
+    const results = document.getElementById("results");
+
+    function makeQuestion(numberCount) {
+      const numbers = [];
+      let total = 0;
+
+      for (let i = 0; i < numberCount; i++) {
+        let value;
+
+        if (i === 0) {
+          value = Math.floor(Math.random() * 9) + 1;
+        } else {
+          value = Math.floor(Math.random() * 9) + 1;
+          if (Math.random() < 0.5) value = -value;
+        }
+
+        numbers.push(value);
+        total += value;
+      }
+
+      return { numbers, answer: total };
+    }
+
+    function formatNumber(value, index) {
+      if (index === 0) return String(value);
+      return value > 0 ? "+" + value : "−" + Math.abs(value);
+    }
+
+    function displayQuestions() {
+      columns.innerHTML = "";
+
+      questions.forEach((question, index) => {
+        const card = document.createElement("div");
+        card.className = "question";
+
+        const numberLabel = document.createElement("div");
+        numberLabel.className = "question-number";
+        numberLabel.textContent = "Column " + (index + 1);
+
+        const numberList = document.createElement("div");
+        numberList.className = "numbers";
+
+        question.numbers.forEach((number, i) => {
+          const line = document.createElement("div");
+          line.textContent = formatNumber(number, i);
+          numberList.appendChild(line);
+        });
+
+        const answer = document.createElement("input");
+        answer.type = "number";
+        answer.step = "1";
+        answer.className = "answer";
+        answer.placeholder = "Answer";
+        answer.setAttribute("aria-label", "Answer for column " + (index + 1));
+        answer.disabled = true;
+
+        card.append(numberLabel, numberList, answer);
+        columns.appendChild(card);
+      });
+    }
+
+    function updateTimer() {
+      const minutes = Math.floor(secondsLeft / 60);
+      const seconds = secondsLeft % 60;
+      timer.textContent = "Time: " +
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+    }
+
+    function finishTest(message) {
+      clearInterval(timerInterval);
+      testRunning = false;
+      status.textContent = message;
+
+      document.querySelectorAll(".answer").forEach(input => {
+        input.disabled = true;
+      });
+
+      submitButton.disabled = true;
+      scoreTest();
+    }
+
+    function startTest() {
+      clearInterval(timerInterval);
+
+      const count = Number(document.getElementById("columnCount").value);
+      const numberCount = Number(document.getElementById("numberCount").value);
+      const minutes = Number(document.getElementById("timeLimit").value);
+
+      questions = Array.from(
+        { length: count },
+        () => makeQuestion(numberCount)
+      );
+
+      displayQuestions();
+
+      secondsLeft = minutes * 60;
+      updateTimer();
+
+      document.querySelectorAll(".answer").forEach(input => {
+        input.disabled = false;
+      });
+
+      results.innerHTML = "<h2>My results</h2><p>Test in progress. Good luck!</p>";
+      status.textContent = "Test in progress";
+      submitButton.disabled = false;
+      testRunning = true;
+
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        updateTimer();
+
+        if (secondsLeft <= 0) {
+          finishTest("Time is up!");
+        }
+      }, 1000);
+    }
+
+    function scoreTest() {
+      let correct = 0;
+      let attempted = 0;
+      let unanswered = 0;
+
+      const answers = document.querySelectorAll(".answer");
+
+      questions.forEach((question, index) => {
+        const value = answers[index].value.trim();
+
+        if (value === "") {
+          unanswered++;
+          return;
+        }
+
+        attempted++;
+        if (Number(value) === question.answer) {
+          correct++;
+        }
+      });
+
+      const incorrect = attempted - correct;
+      const accuracy = attempted === 0
+        ? 0
+        : Math.round((correct / attempted) * 100);
+
+      results.innerHTML = `
+        <h2>Test results</h2>
+        <p><strong>Student:</strong> ${document.getElementById("student").value}</p>
+        <p class="correct"><strong>Correct:</strong> ${correct}</p>
+        <p class="incorrect"><strong>Incorrect:</strong> ${incorrect}</p>
+        <p><strong>Unanswered:</strong> ${unanswered}</p>
+        <p><strong>Total columns:</strong> ${questions.length}</p>
+        <p><strong>Accuracy:</strong> ${accuracy}% of attempted columns</p>
+        <p><strong>Time remaining:</strong> ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}</p>
+        <p>Keep practising. Every attempt helps you improve!</p>
+      `;
+    }
+
+    document.getElementById("startButton").addEventListener("click", startTest);
+
+    submitButton.addEventListener("click", () => {
+      if (testRunning) finishTest("Test submitted");
+    });
+
+    document.getElementById("resetButton").addEventListener("click", () => {
+      if (!testRunning) return;
+      document.querySelectorAll(".answer").forEach(input => {
+        input.value = "";
+      });
+    });
+  </script>
+</body>
+</html>
